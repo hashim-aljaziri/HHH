@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ 'rtl' if lang == 'ar' else 'ltr' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QURRA | قرة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo:wght@400;700&family=Lora:wght@400;700&family=Montserrat:wght@400;700&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body data-theme="{{ theme }}">
+    <style>
+        :root {
+            --font-family-latin: '{{ font_family_latin }}', 'Playfair Display', serif;
+            --font-family-arabic: '{{ font_family_arabic }}', 'Amiri', serif;
+            --font-scale-base: {{ font_scale_base }};
+            --font-scale-heading: {{ font_scale_heading }};
+            --font-scale-nav: {{ font_scale_nav }};
+        }
+
+        html[dir='rtl'] {
+            --font-family-active: var(--font-family-arabic);
+        }
+
+        html[dir='ltr'] {
+            --font-family-active: var(--font-family-latin);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image: url("{{ url_for('static', filename='images/' ~ background_logo) }}");
+            background-repeat: no-repeat;
+            background-position: center bottom;
+            background-size: min(55rem, 80vw);
+            opacity: 0.05;
+            pointer-events: none;
+        }
+    </style>
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between px-4 py-3">
+            <div class="flex items-center gap-4">
+                <a href="/" class="flex items-center gap-3 text-2xl font-bold text-turquoise tracking-widest">
+                    <img src="{{ url_for('static', filename='images/' ~ logo) }}" alt="QURRA" class="h-10 w-auto">
+                    QURRA
+                </a>
+            </div>
+
+            <div class="hidden md:flex flex-1 justify-center gap-6 uppercase text-sm tracking-widest">
+                <a href="/" class="{{ 'nav-link-en tracking-[0.08em]' if lang == 'en' else '' }}">{{ 'Home' if lang == 'en' else 'الرئيسية' }}</a>
+                <a href="/shop" class="{{ 'nav-link-en tracking-[0.08em]' if lang == 'en' else '' }}">{{ 'Collection' if lang == 'en' else 'التشكيلة' }}</a>
+                <a href="/track" class="{{ 'nav-link-en tracking-[0.08em]' if lang == 'en' else '' }}">{{ 'Track Order' if lang == 'en' else 'تتبع الطلب' }}</a>
+                <a href="https://www.facebook.com/share/1EZu9XYxBE/" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/qurra_ly/" target="_blank">Instagram</a>
+                <a href="https://www.tiktok.com/@qurra_ly" target="_blank">TikTok</a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 text-xs uppercase tracking-widest text-slate-500">
+                    <span>{{ 'Online' if lang == 'en' else 'متصلين' }}: {{ online_customers }}</span>
+                    <span class="hidden sm:inline">•</span>
+                    <span>{{ 'Members' if lang == 'en' else 'أعضاء' }}: {{ customer_count }}</span>
+                </div>
+                <a href="/cart" class="relative inline-flex items-center gap-2 border border-slate-200 px-3 py-1 rounded text-sm hover:bg-slate-50">
+                    🛒
+                    <span>{{ cart_count }}</span>
+                </a>
+                {% if customer_user %}
+                <a href="/orders" class="bg-gray-100 px-3 py-1 rounded text-xs">{{ 'My Orders' if lang == 'en' else 'طلباتي' }}</a>
+                <a href="/customer/logout" class="bg-gray-100 px-3 py-1 rounded text-xs">{{ 'Logout' if lang == 'en' else 'تسجيل خروج' }}</a>
+                {% else %}
+                <a href="/customer/login" class="bg-gray-100 px-3 py-1 rounded text-xs">{{ 'Customer Login' if lang == 'en' else 'دخول العملاء' }}</a>
+                {% endif %}
+                <a href="/switch_lang" class="bg-gray-100 px-3 py-1 rounded text-xs">EN/AR</a>
+                <select onchange="window.location=this.value" class="border rounded px-2 py-1 text-xs">
+                    <option value="{{ url_for('switch_theme', theme='light') }}" {% if theme == 'light' %}selected{% endif %}>{{ 'Light' if lang == 'en' else 'فاتح' }}</option>
+                    <option value="{{ url_for('switch_theme', theme='dark') }}" {% if theme == 'dark' %}selected{% endif %}>{{ 'Dark' if lang == 'en' else 'داكن' }}</option>
+                    <option value="{{ url_for('switch_theme', theme='pink') }}" {% if theme == 'pink' %}selected{% endif %}>{{ 'Warm' if lang == 'en' else 'دافئ' }}</option>
+                    <option value="{{ url_for('switch_theme', theme='ocean') }}" {% if theme == 'ocean' %}selected{% endif %}>{{ 'Ocean' if lang == 'en' else 'محيطي' }}</option>
+                    <option value="{{ url_for('switch_theme', theme='sand') }}" {% if theme == 'sand' %}selected{% endif %}>{{ 'Sand' if lang == 'en' else 'رملي' }}</option>
+                    <option value="{{ url_for('switch_theme', theme='forest') }}" {% if theme == 'forest' %}selected{% endif %}>{{ 'Forest' if lang == 'en' else 'غابة' }}</option>
+                </select>
+            </div>
+
+            <div class="md:hidden ml-auto">
+                <button id="mobile-menu-btn" aria-label="Toggle menu" class="px-3 py-2 rounded-md border bg-white">
+                    ☰
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile menu (hidden by default) -->
+        <div id="mobile-menu" class="md:hidden hidden w-full mt-4">
+            <div class="flex flex-col gap-3 bg-white p-4 rounded-lg shadow-sm">
+                <a href="/">{{ 'Home' if lang == 'en' else 'الرئيسية' }}</a>
+                <a href="/shop">{{ 'Collection' if lang == 'en' else 'التشكيلة' }}</a>
+                <a href="/track">{{ 'Track Order' if lang == 'en' else 'تتبع الطلب' }}</a>
+                <a href="https://www.facebook.com/share/1EZu9XYxBE/" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/qurra_ly/" target="_blank">Instagram</a>
+                <a href="https://www.tiktok.com/@qurra_ly" target="_blank">TikTok</a>
+                <a href="/cart">{{ 'Cart' if lang == 'en' else 'العربة' }} ({{ cart_count }})</a>
+                {% if customer_user %}
+                <a href="/orders">{{ 'My Orders' if lang == 'en' else 'طلباتي' }}</a>
+                <a href="/customer/logout">{{ 'Logout' if lang == 'en' else 'تسجيل خروج' }}</a>
+                {% else %}
+                <a href="/customer/login">{{ 'Customer Login' if lang == 'en' else 'دخول العملاء' }}</a>
+                {% endif %}
+                <a href="/switch_lang">EN/AR</a>
+                <select onchange="window.location=this.value" class="border rounded px-2 py-1 text-xs">
+                    <option value="{{ url_for('switch_theme', theme='light') }}" {% if theme == 'light' %}selected{% endif %}>{{ 'Light' if lang == 'en' else 'فاتح' }}</option>
+                    <option value="{{ url_for('switch_theme', theme='dark') }}" {% if theme == 'dark' %}selected{% endif %}>{{ 'Dark' if lang == 'en' else 'داكن' }}</option>
+                    <option value="{{ url_for('switch_theme', theme='pink') }}" {% if theme == 'pink' %}selected{% endif %}>{{ 'Warm' if lang == 'en' else 'دافئ' }}</option>
+                    <option value="{{ url_for('switch_theme', theme='ocean') }}" {% if theme == 'ocean' %}selected{% endif %}>{{ 'Ocean' if lang == 'en' else 'محيطي' }}</option>
+                    <option value="{{ url_for('switch_theme', theme='sand') }}" {% if theme == 'sand' %}selected{% endif %}>{{ 'Sand' if lang == 'en' else 'رملي' }}</option>
+                    <option value="{{ url_for('switch_theme', theme='forest') }}" {% if theme == 'forest' %}selected{% endif %}>{{ 'Forest' if lang == 'en' else 'غابة' }}</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="fixed top-24 right-4 z-50 space-y-3">
+                {% for category, message in messages %}
+                    <div class="rounded-xl border px-4 py-3 shadow-lg text-sm {% if category == 'error' %}bg-red-50 border-red-200 text-red-800{% elif category == 'success' %}bg-emerald-50 border-emerald-200 text-emerald-800{% else %}bg-slate-50 border-slate-200 text-slate-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="mt-20 p-10 bg-white border-t text-center">
+        <p class="text-turquoise font-bold">QURRA Boutique | قرة</p>
+        <p class="text-sm text-gray-400 mt-2">Libya - 00218911010330</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var btn = document.getElementById('mobile-menu-btn');
+            var menu = document.getElementById('mobile-menu');
+            if (btn && menu) {
+                btn.addEventListener('click', function() {
+                    menu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

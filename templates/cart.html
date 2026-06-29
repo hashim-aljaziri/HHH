@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="container mx-auto py-20 px-6">
+    <h1 class="text-4xl font-serif mb-8">{{ 'Shopping Cart' if lang == 'en' else 'سلة التسوق' }}</h1>
+    {% if cart %}
+    <form method="POST" action="{{ url_for('update_cart') }}" class="space-y-6">
+        <div class="grid gap-6">
+            {% for key, item in cart.items() %}
+            <div class="bg-white rounded-3xl p-6 shadow-sm flex flex-col md:flex-row gap-6">
+                <img src="/static/images/{{ item.image }}" class="w-full md:w-56 h-56 object-cover rounded-xl" alt="{{ item.product_name_en }}">
+                <div class="flex-1">
+                    <h2 class="text-2xl font-semibold mb-2">{{ item.product_name_en if lang == 'en' else item.product_name_ar }}</h2>
+                    <p class="text-sm text-gray-500 mb-3">{{ 'Size' if lang == 'en' else 'المقاس' }}: {{ item.size }}</p>
+                    <p class="text-lg font-bold mb-4">{{ item.price }} LYD</p>
+                    <div class="flex items-center gap-3">
+                        <label class="text-xs uppercase tracking-widest text-slate-500">{{ 'Quantity' if lang == 'en' else 'الكمية' }}</label>
+                        <input type="number" name="quantity_{{ key }}" value="{{ item.quantity }}" min="0" class="w-24 rounded-xl border px-3 py-2">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
+            <button type="submit" class="btn-qurra px-10 py-3">{{ 'Update Cart' if lang == 'en' else 'تحديث السلة' }}</button>
+            <div class="text-right">
+                <p class="text-sm text-slate-500">{{ 'Subtotal' if lang == 'en' else 'المجموع الجزئي' }}: <span class="font-semibold">{{ subtotal }} LYD</span></p>
+                <button formaction="{{ url_for('checkout') }}" formmethod="post" class="mt-3 inline-block btn-qurra px-10 py-3">{{ 'Checkout' if lang == 'en' else 'الدفع' }}</button>
+            </div>
+        </div>
+    </form>
+    {% else %}
+    <div class="bg-white rounded-3xl p-12 shadow-sm text-center">
+        <p class="text-lg mb-4">{{ 'Your cart is empty.' if lang == 'en' else 'سلة التسوق فارغة.' }}</p>
+        <a href="/shop" class="btn-qurra px-8 py-3">{{ 'Continue Shopping' if lang == 'en' else 'متابعة التسوق' }}</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

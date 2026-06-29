@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="container mx-auto py-20 px-6">
+    <div class="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4 mb-12">
+        <div>
+            <h1 class="text-4xl font-serif mb-2">{{ 'Shop Collection' if lang == 'en' else 'تشكيلة المتجر' }}</h1>
+            <p class="text-gray-500">{{ 'Browse all available designs and place your order.' if lang == 'en' else 'تصفحي جميع التصاميم المتاحة واطلبي الآن.' }}</p>
+        </div>
+        <div class="text-sm text-gray-500 uppercase tracking-widest">
+            {{ 'Theme' if lang == 'en' else 'الثيم' }}: {{ theme.capitalize() }}
+        </div>
+    </div>
+
+    <div class="mb-8 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <input id="shop-search" type="text" class="border rounded px-4 py-3" placeholder="{{ 'Search products' if lang == 'en' else 'ابحث عن منتج' }}">
+        <select id="shop-season-filter" class="border rounded px-4 py-3">
+            <option value="all">{{ 'All Seasons' if lang == 'en' else 'كل المواسم' }}</option>
+            <option value="summer">{{ 'Summer' if lang == 'en' else 'صيفي' }}</option>
+            <option value="winter">{{ 'Winter' if lang == 'en' else 'شتوي' }}</option>
+        </select>
+        <select id="shop-sort" class="border rounded px-4 py-3">
+            <option value="default">{{ 'Sort: Default' if lang == 'en' else 'الترتيب: افتراضي' }}</option>
+            <option value="price_asc">{{ 'Price Low-High' if lang == 'en' else 'السعر من الأقل للأعلى' }}</option>
+            <option value="price_desc">{{ 'Price High-Low' if lang == 'en' else 'السعر من الأعلى للأقل' }}</option>
+        </select>
+    </div>
+
+    {% if products %}
+    <div id="shop-grid" class="grid gap-8 md:grid-cols-3">
+        {% for p in products %}
+        <div class="premium-card p-6 shop-card"
+             data-name="{{ (p.name_en ~ ' ' ~ p.name_ar)|lower }}"
+             data-category="{{ (p.category or '')|lower }}"
+             data-season="{{ (p.season or 'summer')|lower }}"
+             data-price="{{ p.price }}"
+             data-default-order="{{ loop.index0 }}">
+            <img src="/static/images/{{ p.image }}" class="w-full h-72 object-cover rounded-sm mb-6" alt="{{ p.name_en }}">
+            <span class="text-xs uppercase tracking-widest text-gray-500">{{ p.category }}</span>
+            <div class="mt-2 flex flex-wrap gap-2 text-xs">
+                <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-600">{{ p.fabric_type or ('Not set' if lang == 'en' else 'غير محدد') }}</span>
+                <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-600">{{ ('Summer' if (p.season or 'summer') == 'summer' else 'Winter') if lang == 'en' else ('صيفي' if (p.season or 'summer') == 'summer' else 'شتوي') }}</span>
+            </div>
+            <h2 class="text-2xl font-serif mt-2 mb-4">{{ p.name_en if lang == 'en' else p.name_ar }}</h2>
+            <p class="text-turquoise text-xl font-bold mb-4">{{ p.price }} LYD</p>
+            <p class="text-sm text-gray-600 mb-6">{{ p.description_en if lang == 'en' else p.description_ar }}</p>
+            <a href="/product/{{ p.id }}" class="inline-block btn-qurra">{{ 'View Details' if lang == 'en' else 'التفاصيل' }}</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white p-10 shadow-sm text-center">
+        <p class="text-lg">{{ 'No products are available yet. Please add items from the admin page.' if lang == 'en' else 'لا توجد منتجات حالياً. الرجاء إضافة منتجات من صفحة المدير.' }}</p>
+    </div>
+    {% endif %}
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const grid = document.getElementById('shop-grid');
+    const searchInput = document.getElementById('shop-search');
+    const seasonFilter = document.getElementById('shop-season-filter');
+    const sortSelect = document.getElementById('shop-sort');
+
+    if (!grid || !searchInput || !seasonFilter || !sortSelect) {
+        return;
+    }
+
+    const cards = Array.from(grid.querySelectorAll('.shop-card'));
+
+    function applyShopFilters() {
+        const q = (searchInput.value || '').trim().toLowerCase();
+        const season = seasonFilter.value;
+        const sortBy = sortSelect.value;
+
+        let filtered = cards.filter((card) => {
+            const name = card.dataset.name || '';
+            const category = card.dataset.category || '';
+            const cardSeason = card.dataset.season || 'summer';
+            const matchesText = !q || name.includes(q) || category.includes(q);
+            const matchesSeason = season === 'all' || cardSeason === season;
+            return matchesText && matchesSeason;
+        });
+
+        filtered.sort((a, b) => {
+            const aPrice = Number(a.dataset.price || '0');
+            const bPrice = Number(b.dataset.price || '0');
+            const aOrder = Number(a.dataset.defaultOrder || '0');
+            const bOrder = Number(b.dataset.defaultOrder || '0');
+
+            if (sortBy === 'price_asc') return aPrice - bPrice;
+            if (sortBy === 'price_desc') return bPrice - aPrice;
+            return aOrder - bOrder;
+        });
+
+        cards.forEach((card) => {
+            card.style.display = 'none';
+        });
+
+        filtered.forEach((card) => {
+            card.style.display = '';
+            grid.appendChild(card);
+        });
+    }
+
+    searchInput.addEventListener('input', applyShopFilters);
+    seasonFilter.addEventListener('change', applyShopFilters);
+    sortSelect.addEventListener('change', applyShopFilters);
+});
+</script>
+{% endblock %}

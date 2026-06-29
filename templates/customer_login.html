@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="container mx-auto py-20 px-6">
+    <div class="grid gap-10 lg:grid-cols-2">
+        <div class="bg-white p-10 rounded-3xl shadow-xl">
+            <h2 class="text-3xl font-serif mb-6">{{ 'Customer Login' if lang == 'en' else 'دخول العملاء' }}</h2>
+            <form method="POST" action="{{ url_for('customer_login') }}" class="space-y-5">
+                <div>
+                    <label class="text-sm uppercase tracking-widest text-slate-500">{{ 'Email' if lang == 'en' else 'البريد الإلكتروني' }}</label>
+                    <input type="email" name="email" class="mt-2 w-full rounded-xl border px-4 py-3" required>
+                </div>
+                <div>
+                    <label class="text-sm uppercase tracking-widest text-slate-500">{{ 'Password' if lang == 'en' else 'كلمة المرور' }}</label>
+                    <input type="password" name="password" class="mt-2 w-full rounded-xl border px-4 py-3" required>
+                </div>
+                <button type="submit" class="btn-qurra w-full text-center">{{ 'Login' if lang == 'en' else 'تسجيل الدخول' }}</button>
+            </form>
+        </div>
+
+        <div class="bg-white p-10 rounded-3xl shadow-xl">
+            <h2 class="text-3xl font-serif mb-6">{{ 'Create Account' if lang == 'en' else 'إنشاء حساب' }}</h2>
+            <form method="POST" action="{{ url_for('customer_register') }}" class="space-y-5">
+                <div>
+                    <label class="text-sm uppercase tracking-widest text-slate-500">{{ 'Username' if lang == 'en' else 'اسم المستخدم' }}</label>
+                    <input type="text" name="username" class="mt-2 w-full rounded-xl border px-4 py-3" required>
+                </div>
+                <div>
+                    <label class="text-sm uppercase tracking-widest text-slate-500">{{ 'Email' if lang == 'en' else 'البريد الإلكتروني' }}</label>
+                    <input type="email" name="email" class="mt-2 w-full rounded-xl border px-4 py-3" required>
+                </div>
+                <div>
+                    <label class="text-sm uppercase tracking-widest text-slate-500">{{ 'Password' if lang == 'en' else 'كلمة المرور' }}</label>
+                    <input type="password" name="password" class="mt-2 w-full rounded-xl border px-4 py-3" required>
+                </div>
+                <button type="submit" class="btn-qurra w-full text-center">{{ 'Register' if lang == 'en' else 'إنشاء حساب' }}</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

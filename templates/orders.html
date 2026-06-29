@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="container mx-auto py-20 px-6">
+    <h1 class="text-4xl font-serif mb-8">{{ 'My Orders' if lang == 'en' else 'طلباتي' }}</h1>
+    {% if orders %}
+    <div class="space-y-6">
+        {% for order in orders %}
+        <div class="bg-white rounded-3xl p-6 shadow-sm">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
+                <div>
+                    <h2 class="text-xl font-semibold">{{ 'Order #' if lang == 'en' else 'طلبية رقم' }} {{ order.id }}</h2>
+                    <p class="text-sm text-slate-500">{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-slate-500">{{ 'Status' if lang == 'en' else 'الحالة' }}: <span class="font-semibold">{{ order.status }}</span></p>
+                    <p class="text-sm text-slate-500">{{ 'Tracking' if lang == 'en' else 'رمز التتبع' }}: <span class="font-semibold">{{ order.tracking_code }}</span></p>
+                </div>
+            </div>
+            <div class="grid gap-4 md:grid-cols-3">
+                {% for item in order.items %}
+                <div class="bg-slate-50 rounded-3xl p-4">
+                    <p class="font-semibold">{{ item.product_name_en if lang == 'en' else item.product_name_ar }}</p>
+                    <p class="text-sm text-slate-500">{{ 'Size' if lang == 'en' else 'المقاس' }}: {{ item.size }}</p>
+                    <p class="text-sm text-slate-500">{{ 'Qty' if lang == 'en' else 'الكمية' }}: {{ item.quantity }}</p>
+                    <p class="text-sm text-slate-500">{{ 'Price' if lang == 'en' else 'السعر' }}: {{ item.price }} LYD</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-3xl p-12 shadow-sm text-center">
+        <p class="text-lg">{{ 'You have not placed any orders yet.' if lang == 'en' else 'لم تقم بأي طلبات بعد.' }}</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

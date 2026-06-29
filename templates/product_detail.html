@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mx-auto py-20 px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
+    <div>
+        <img src="/static/images/{{ product.image }}" class="w-full shadow-2xl rounded-sm">
+    </div>
+    <div class="flex flex-col justify-center">
+        <span class="text-turquoise uppercase tracking-widest text-sm mb-2">{{ product.category }}</span>
+        <div class="mb-3 flex flex-wrap gap-2 text-xs">
+            <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-600">{{ product.fabric_type or ('Not set' if lang == 'en' else 'غير محدد') }}</span>
+            <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-600">{{ ('Summer' if (product.season or 'summer') == 'summer' else 'Winter') if lang == 'en' else ('صيفي' if (product.season or 'summer') == 'summer' else 'شتوي') }}</span>
+        </div>
+        <h1 class="text-4xl font-serif mb-4">{{ product.name_en if lang == 'en' else product.name_ar }}</h1>
+        <p class="text-3xl text-gray-800 mb-8">{{ product.price }} LYD</p>
+        {% if not product.is_available %}
+        <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700 text-sm">
+            {{ 'This product is currently unavailable.' if lang == 'en' else 'هذا المنتج غير متاح حالياً.' }}
+        </div>
+        {% endif %}
+        
+        <div class="mb-10">
+            <h4 class="text-sm font-bold uppercase mb-4">{{ 'Select Size' if lang == 'en' else 'اختر المقاس' }}</h4>
+            <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="space-y-6">
+                <div class="grid gap-4 sm:grid-cols-3">
+                    <label class="block rounded-xl border p-4 text-center cursor-pointer">
+                        <input type="radio" name="size" value="S" class="mr-2" checked>
+                        S ({{ product.stock_s }})
+                    </label>
+                    <label class="block rounded-xl border p-4 text-center cursor-pointer">
+                        <input type="radio" name="size" value="M" class="mr-2">
+                        M ({{ product.stock_m }})
+                    </label>
+                    <label class="block rounded-xl border p-4 text-center cursor-pointer">
+                        <input type="radio" name="size" value="L" class="mr-2">
+                        L ({{ product.stock_l }})
+                    </label>
+                </div>
+                <div class="flex items-center gap-4">
+                    <label class="text-sm uppercase tracking-widest text-slate-500">{{ 'Quantity' if lang == 'en' else 'الكمية' }}</label>
+                    <input type="number" name="quantity" value="1" min="1" max="10" class="w-24 rounded-xl border px-4 py-3">
+                </div>
+                <button type="submit" class="btn-qurra w-full py-4 text-center font-bold tracking-widest uppercase disabled:opacity-60 disabled:cursor-not-allowed" {% if not product.is_available %}disabled{% endif %}>{{ 'Add to Cart' if lang == 'en' else 'أضف إلى السلة' }}</button>
+            </form>
+        </div>
+
+        <p class="text-gray-500 leading-relaxed mb-10">
+            {{ product.description_en if lang == 'en' else product.description_ar }}
+        </p>
+
+        <a href="/cart" class="bg-slate-900 text-white py-4 text-center rounded-sm font-bold tracking-widest uppercase hover:bg-slate-800 block">
+            {{ 'View Cart' if lang == 'en' else 'عرض السلة' }}
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="container mx-auto py-20 px-6">
+    <div class="max-w-3xl mx-auto bg-white p-10 rounded-3xl shadow-xl">
+        <h1 class="text-4xl font-serif mb-6">{{ 'Track Order' if lang == 'en' else 'تتبع الطلب' }}</h1>
+        <form method="GET" action="{{ url_for('track_order') }}" class="space-y-4">
+            <label class="text-sm uppercase tracking-widest text-slate-500">{{ 'Enter tracking code' if lang == 'en' else 'أدخل رمز التتبع' }}</label>
+            <input type="text" name="code" value="{{ tracking_code }}" class="w-full rounded-xl border px-4 py-3">
+            <button type="submit" class="btn-qurra px-8 py-3">{{ 'Search' if lang == 'en' else 'بحث' }}</button>
+        </form>
+        {% if order %}
+        <div class="mt-10 grid gap-4">
+            <div class="rounded-3xl bg-slate-50 p-6">
+                <h2 class="text-2xl font-semibold mb-3">{{ 'Order #' if lang == 'en' else 'طلبية رقم' }} {{ order.id }}</h2>
+                <p class="text-sm text-slate-500">{{ 'Status' if lang == 'en' else 'الحالة' }}: {{ order.status }}</p>
+                <p class="text-sm text-slate-500">{{ 'Tracking' if lang == 'en' else 'رمز التتبع' }}: {{ order.tracking_code }}</p>
+                <p class="text-sm text-slate-500">{{ 'Total' if lang == 'en' else 'الإجمالي' }}: {{ order.total_amount }} LYD</p>
+            </div>
+            <div class="rounded-3xl bg-slate-50 p-6">
+                <h3 class="text-lg font-semibold mb-3">{{ 'Items' if lang == 'en' else 'العناصر' }}</h3>
+                <div class="grid gap-3">
+                    {% for item in order.items %}
+                    <div class="rounded-2xl bg-white p-4 shadow-sm">
+                        <p class="font-semibold">{{ item.product_name_en if lang == 'en' else item.product_name_ar }}</p>
+                        <p class="text-sm text-slate-500">{{ 'Size' if lang == 'en' else 'المقاس' }}: {{ item.size }} • {{ 'Qty' if lang == 'en' else 'الكمية' }}: {{ item.quantity }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

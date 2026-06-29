@@ -1,0 +1,85 @@
+/**
+ * QURRA Boutique - Main Stylesheet
+ * Tailwind CSS + Custom Utilities
+ */
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom Components */
+@layer components {
+  .btn-qurra {
+    @apply px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold uppercase tracking-widest hover:bg-emerald-700 transition-colors duration-200;
+  }
+
+  .btn-qurra:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .premium-card {
+    @apply bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300;
+  }
+
+  .premium-card img {
+    @apply rounded-lg object-cover;
+  }
+
+  .text-turquoise {
+    @apply text-cyan-600;
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .font-serif-custom {
+    font-family: var(--font-family-latin, 'Playfair Display'), serif;
+  }
+
+  .font-arabic-custom {
+    font-family: var(--font-family-arabic, 'Cairo'), sans-serif;
+  }
+
+  .text-scale-base {
+    font-size: calc(1rem * var(--font-scale-base, 1));
+  }
+
+  .text-scale-heading {
+    font-size: calc(1.5rem * var(--font-scale-heading, 1));
+  }
+
+  .text-scale-nav {
+    font-size: calc(0.875rem * var(--font-scale-nav, 1));
+  }
+}
+
+/* Theme Variables */
+:root {
+  --font-family-latin: 'Playfair Display', serif;
+  --font-family-arabic: 'Cairo', sans-serif;
+  --font-scale-base: 1;
+  --font-scale-heading: 1;
+  --font-scale-nav: 1;
+  --color-turquoise: #0891b2;
+  --color-emerald-600: #16a34a;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    font-size: 12pt;
+    color: #000;
+    background: #fff;
+  }
+}

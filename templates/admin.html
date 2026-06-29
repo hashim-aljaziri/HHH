@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="p-10">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 bg-white p-8 shadow-sm">
+        <div>
+            <h1 class="text-2xl font-bold">Admin Dashboard | لوحة التحكم</h1>
+            <p class="text-sm text-gray-500 mt-2">Manage products, view earnings, and adjust site settings from the control panel.</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="/control" class="bg-turquoise text-white px-4 py-2 rounded">Control Panel</a>
+            <a href="/logout" class="border border-slate-200 px-4 py-2 rounded">Logout</a>
+        </div>
+        <div class="text-right">
+            <p class="text-gray-400">Total Earnings (الأرباح)</p>
+            <p class="text-3xl font-bold text-green-600">{{ earnings }} LYD</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <!-- ADD PRODUCT FORM -->
+        <div class="bg-white p-8 shadow-sm">
+            <h2 class="font-bold mb-6">Add New Product</h2>
+            <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-4">
+                <p class="text-xs text-gray-500">Upload a CSV file to import many products at once, or fill the fields below to add a single product.</p>
+                <input type="file" name="product_csv" accept=".csv" class="border p-2 bg-white">
+                <div class="text-xs text-gray-400 mb-4">CSV columns: name_ar,name_en,category,price,image,stock_s,stock_m,stock_l,desc_ar,desc_en</div>
+                <input type="text" name="name_ar" placeholder="Name (Arabic)" class="border p-2" required>
+                <input type="text" name="name_en" placeholder="Name (English)" class="border p-2" required>
+                <input type="text" name="category" placeholder="Category (e.g. Velvet)" class="border p-2">
+                <input type="number" name="price" placeholder="Price (LYD)" class="border p-2" required>
+                <input type="text" name="image" placeholder="Image Name (e.g. abaya1.jpg)" class="border p-2">
+                <input type="file" name="product_image_file" accept="image/*" class="border p-2 bg-white">
+                <div class="flex gap-2">
+                    <input type="number" name="stock_s" placeholder="Stock S" class="border p-1 w-full">
+                    <input type="number" name="stock_m" placeholder="Stock M" class="border p-1 w-full">
+                    <input type="number" name="stock_l" placeholder="Stock L" class="border p-1 w-full">
+                </div>
+                <textarea name="desc_ar" placeholder="Description (Arabic)" class="border p-2 h-20"></textarea>
+                <textarea name="desc_en" placeholder="Description (English)" class="border p-2 h-20"></textarea>
+                <button type="submit" class="bg-turquoise text-white py-2">Save Product</button>
+            </form>
+        </div>
+
+        <!-- PRODUCT LIST -->
+        <div class="lg:col-span-2 bg-white p-8 shadow-sm overflow-x-auto">
+            <table class="w-full text-left rtl:text-right">
+                <thead>
+                    <tr class="border-b">
+                        <th class="p-2">Product</th>
+                        <th class="p-2">Price</th>
+                        <th class="p-2">Inventory</th>
+                        <th class="p-2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-2 font-bold">{{ p.name_ar }}</td>
+                        <td class="p-2">{{ p.price }} LYD</td>
+                        <td class="p-2">S:{{p.stock_s}} M:{{p.stock_m}} L:{{p.stock_l}}</td>
+                        <td class="p-2 text-red-500">
+                            <a href="/admin/delete/{{p.id}}" onclick="return confirm('Confirm removal?')">Remove</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mx-auto py-20 px-6 max-w-xl">
+    <div class="bg-white p-10 rounded-3xl shadow-lg">
+        <h1 class="text-3xl font-serif mb-6">{{ 'Admin Login' if lang == 'en' else 'تسجيل دخول المدير' }}</h1>
+        <form method="POST" class="space-y-4">
+            <label class="block">
+                <span class="text-sm text-gray-500">{{ 'Username' if lang == 'en' else 'اسم المستخدم' }}</span>
+                <input type="text" name="username" class="mt-2 w-full border rounded px-4 py-3" required>
+            </label>
+            <label class="block">
+                <span class="text-sm text-gray-500">{{ 'Password' if lang == 'en' else 'كلمة المرور' }}</span>
+                <input type="password" name="password" class="mt-2 w-full border rounded px-4 py-3" required>
+            </label>
+            <button type="submit" class="btn-qurra w-full text-center">{{ 'Sign In' if lang == 'en' else 'دخول' }}</button>
+        </form>
+        <p class="text-xs text-gray-400 mt-6">{{ 'Use one of the three admin accounts to access the control panel.' if lang == 'en' else 'استخدم أحد حسابات المدير الثلاثة للوصول إلى لوحة التحكم.' }}</p>
+    </div>
+</div>
+{% endblock %}
